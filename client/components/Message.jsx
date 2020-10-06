@@ -3,7 +3,7 @@ import React from 'react';
 const Message = (props) => {
   const names = [
     'Will',
-    'Phill',
+    'Phil',
     'Kyle',
     'Sara',
     'Keiran',
