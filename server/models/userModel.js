@@ -4,9 +4,10 @@ const bcrypt = require('bcrypt');
 
 mongoose
   .connect(process.env.MONGO_URI, {
+    useCreateIndex: true,
+    useFindAndModify: false,
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useCreateIndex: true,
     dbName: 'cardgame',
   })
   .then(() => console.log('Connected to Mongo DB'))
@@ -36,13 +37,22 @@ const userSchema = new Schema({
 const SALT_WORK_FACTOR = 10;
 
 // not using arrow function so that we can have access to 'this'
-userSchema.pre('save', function (next) {
+userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
-  bcrypt.hash(this.password, SALT_WORK_FACTOR, (err, passwordHash) => {
-    if (err) return next(err);
-    this.password = passwordHash;
+
+  try {
+    const hashedPassword = await bcrypt.hash(this.password, SALT_WORK_FACTOR);
+    this.password = hashedPassword;
     next();
-  });
+  } catch (err) {
+    next(err);
+  }
+
+  // bcrypt.hash(this.password, SALT_WORK_FACTOR, (err, passwordHash) => {
+  //   if (err) return next(err);
+  //   this.password = passwordHash;
+  //   next();
+  // });
 });
 
 module.exports = mongoose.model('User', userSchema);

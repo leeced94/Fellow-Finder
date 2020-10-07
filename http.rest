@@ -1,0 +1,21 @@
+DELETE http://localhost:3000/api/delete
+###
+POST http://localhost:3000/api/signup
+Content-Type: application/json
+
+{
+  "username": "123",
+  "password": "123"
+}
+###
+PUT http://localhost:3000/api/update
+Content-Type: application/json
+
+{
+  "user": {
+    "username": "123",
+    "bestRecord": 24,
+    "played": 4
+  },
+  "clickCount": 0
+}
