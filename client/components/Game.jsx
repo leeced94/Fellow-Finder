@@ -1,11 +1,14 @@
 import React from 'react';
-import Board from './Board.jsx';
-import InfoContainer from './InfoContainer.jsx';
+
+import NavBar from './NavBar';
+import Board from './Board';
+import InfoContainer from './InfoContainer';
 import LeaderBoard from './LeaderBoard';
 import Message from './Message';
 
 const Game = ({ state, onCardClick }) => (
   <div className="Game">
+    <NavBar user={state.user} />
     <InfoContainer user={state.user} clickCount={state.clickCount} />
     <Message
       previousCard={state.previousCard}

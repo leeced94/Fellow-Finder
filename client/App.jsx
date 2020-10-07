@@ -4,6 +4,8 @@ import { Switch, Route } from 'react-router-dom';
 import Game from './components/Game';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
+import NavBar from './components/NavBar';
+import UserPage from './components/UserPage';
 
 import './style.css';
 // import pictures from './Picture';
@@ -37,6 +39,7 @@ class App extends Component {
     this.processFinalMatch = this.processFinalMatch.bind(this);
     this.processNormalMatch = this.processNormalMatch.bind(this);
     this.processNotMatch = this.processNotMatch.bind(this);
+    this.changeUserName = this.changeUserName.bind(this);
   }
 
   componentDidMount() {
@@ -141,7 +144,7 @@ class App extends Component {
     const cards = pictures.map((picture, idx) => ({
       flipped: false,
       cardValue: idx,
-      picture: picture,
+      picture,
     }));
 
     cards.push(...cards);
@@ -200,7 +203,17 @@ class App extends Component {
     this.setState({ user, leaderBoard });
   }
 
+  changeUserName(newUserName) {
+    this.setState({
+      user: {
+        ...this.state.user,
+        username: newUserName,
+      },
+    });
+  }
+
   render() {
+    console.log(this.state.user);
     return (
       <div className="router">
         <Switch>
@@ -224,6 +237,18 @@ class App extends Component {
                 {...props}
                 state={this.state}
                 onCardClick={this.onCardClick}
+              />
+            )}
+          />
+
+          <Route
+            exact
+            path="/user"
+            render={(props) => (
+              <UserPage
+                {...props}
+                user={this.state.user}
+                changeUserName={this.changeUserName}
               />
             )}
           />
