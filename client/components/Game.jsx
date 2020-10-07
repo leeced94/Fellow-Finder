@@ -19,6 +19,7 @@ const Game = ({ state, onCardClick }) => (
       cardCreated={state.cardCreated}
       cards={state.cards}
       onCardClick={onCardClick}
+      hasWon={state.hasWon}
     />
     <LeaderBoard leaderBoard={state.leaderBoard} />
   </div>

@@ -25,6 +25,7 @@ const initialState = {
   leaderBoard: {}, // { bestRecord: [{ username: bestRecord }, ...], { mostPlays: [{ username: played }, ... ]}}
   found: null,
   canClick: true,
+  hasWon: false,
 };
 
 class App extends Component {
@@ -67,8 +68,6 @@ class App extends Component {
 
     const cards = this.createRandomCards();
     const { user, leaderBoard } = await this.getUserAndLeaderBoard();
-
-    setTimeout(() => alert('game completed'), 0);
 
     this.setState({
       ...initialState,
@@ -128,6 +127,7 @@ class App extends Component {
 
     // final match
     if (matched === 14) {
+      this.setState({hasWon: true})
       await this.processFinalMatch();
     } else {
       // a match but not the final match

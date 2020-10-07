@@ -65,6 +65,29 @@ button {
   display: grid;
 }
 
+.boardTimer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.timerDiv {
+  border: solid 1px #393939;
+  background-color: #fff2f9;
+  width: 1fr;
+  border-radius: 3px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#timer {
+  font-size: 72pt;
+  margin-block-end: 0;
+  margin-block-start: 0;
+}
+
 .board {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -72,6 +95,16 @@ button {
   gap: 10px;
   align-items: center;
   justify-items: center;
+  border: solid 1px #393939;
+  margin: 20px;
+  padding: 30px;
+  background-color: #fff2f9;
+  border-radius: 3px;
+  z-index: 0;
+}
+
+#winner {
+  z-index: 1;
   border: solid 1px #393939;
   margin: 20px;
   padding: 30px;
