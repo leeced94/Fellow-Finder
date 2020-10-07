@@ -1,19 +1,11 @@
 import React from 'react';
 
-const Message = (props) => {
-  const names = [
-    'Will',
-    'Phil',
-    'Kyle',
-    'Sara',
-    'Keiran',
-    'Jeho',
-    'Wayne',
-    'Midori',
-  ];
-  const prevVal = props.state.previousCard.cardValue;
-  const curVal = props.state.currentCard.cardValue;
-  const found = props.state.found;
+import { names } from '../pictures';
+
+const Message = ({ previousCard, currentCard, found }) => {
+  const prevVal = previousCard.cardValue;
+  const curVal = currentCard.cardValue;
+
   const firstPick = prevVal > -1 ? names[prevVal] : undefined;
   const secondPick = curVal > -1 ? names[curVal] : undefined;
 

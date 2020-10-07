@@ -60,4 +60,8 @@ router.put(
 //   res.status(200).json({ username, bestRecord, played });
 // });
 
+router.delete('/delete', userController.deleteAllUsers, (req, res) => {
+  res.status(200).send('All user deleted!');
+});
+
 module.exports = router;

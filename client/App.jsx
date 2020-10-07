@@ -3,213 +3,201 @@ import { Switch, Route } from 'react-router-dom';
 
 import Game from './components/Game';
 import Login from './components/Login';
-import Signup from './components/Signup';
+import SignUp from './components/SignUp';
 
 import './style.css';
-import pictures from './Picture';
+// import pictures from './Picture';
+import pictures from './pictures';
+
+const initialState = {
+  cardCreated: false,
+  user: {}, // {username, bestRecord, played}
+  cards: [],
+  clickCount: 0,
+  matched: 0, // increment when ever the 2 cards values match, game ends when matched = 16
+  previousCard: {}, // add in the cardObj from cards
+  previousCardID: -1,
+  currentCard: {},
+  currentCardID: -1,
+  cardNeedUpdate: false,
+  leaderBoard: {}, // { bestRecord: [{ username: bestRecord }, ...], { mostPlays: [{ username: played }, ... ]}}
+  found: null,
+  canClick: true,
+};
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      cardCreated: false,
-      user: {}, // {username, bestRecord, played}
-      cardsArray: [],
-      clickCount: 0,
-      matched: 0, // increment when ever the 2 cards values match, game ends when matched = 16
-      previousCard: {}, // add in the cardObj from cards
-      previousCardID: -1,
-      currentCard: {},
-      currentCardID: -1,
-      // allowFlipping: true,
-      cardNeedUpdate: false,
-      leaderBoard: {}, // { bestRecord: [{username: bestRecord}, ...], {mostPlays: [{username: played}, ... ] }  }
-      found: null,
-      canClick: true
-    };
+    this.state = initialState;
 
     this.logInUser = this.logInUser.bind(this);
     this.signUpUser = this.signUpUser.bind(this);
     this.onCardClick = this.onCardClick.bind(this);
+    this.processFinalMatch = this.processFinalMatch.bind(this);
+    this.processNormalMatch = this.processNormalMatch.bind(this);
+    this.processNotMatch = this.processNotMatch.bind(this);
   }
 
   componentDidMount() {
-    const cardsArray = this.createCardsArray();
+    const cards = this.createRandomCards();
     const cardCreated = true;
-    this.setState({ ...this.state, cardsArray, cardCreated });
+    this.setState({ ...this.state, cards, cardCreated });
   }
-  
-  componentDidUpdate() {
-    if (this.state.cardNeedUpdate) {
-      const {
-        currentCard,
-        previousCard,
-        matched,
-        currentCardID,
-        previousCardID,
-      } = this.state;
 
-      if (currentCard.cardValue === previousCard.cardValue) {
-        console.log('found a match!');
-        
-        // final match
-        if (matched === 14) { // Does this need to be 16 instead of 14 matches?
-          setTimeout(() => {
-            alert('game completed');
-          }, 0);
+  async getUserAndLeaderBoard() {
+    const { user, leaderBoard } = await fetch('/api/update', {
+      method: 'PUT',
+      body: JSON.stringify({
+        user: this.state.user,
+        clickCount: this.state.clickCount,
+      }),
+      headers: {
+        'Content-type': 'application/json',
+      },
+    }).then((data) => data.json());
 
-          fetch('/api/update', {
-            method: 'PUT',
-            body: JSON.stringify({
-              user: this.state.user,
-              clickCount: this.state.clickCount,
-            }),
-            headers: {
-              'Content-type': 'application/json',
-            },
-          })
-            .then((data) => data.json())
-            .then((data) => {
-              const cardsArray = this.createCardsArray();
-              const { user, leaderBoard } = data;
+    return { user, leaderBoard };
+  }
 
-              // reset state?
-              this.setState({
-                user,
-                leaderBoard,
-                cardsArray,
-                clickCount: 0,
-                matched: 0,
-                previousCard: {},
-                previousCardID: -1,
-                currentCard: {},
-                currentCardID: -1,
-                cardNeedUpdate: false,
-                found: null,
-                canClick: true
-              });
-            });
-        } else {
-          // a match but not the final match
-          // store the cardValue in found so we can disply the match in message
-          const found = currentCard.cardValue;
+  async processFinalMatch() {
+    const { clickCount } = this.state;
 
-          this.setState({
-            matched: this.state.matched + 2,
-            cardNeedUpdate: false,
-            previousCard: {},
-            previousCardID: -1,
-            currentCard: {},
-            currentCardID: -1,
-            found,
-            canClick: true
-          });
-        }
-      } else {
-        console.log('not a match');
-        
-        // reset flipped
-        previousCard.flipped = false;
-        currentCard.flipped = false;
+    const cards = this.createRandomCards();
+    const { user, leaderBoard } = await this.getUserAndLeaderBoard();
 
-        const cardsArray = [...this.state.cardsArray];
+    setTimeout(() => alert('game completed'), 0);
 
-        cardsArray[previousCardID] = previousCard;
-        cardsArray[currentCardID] = currentCard;
+    this.setState({
+      ...initialState,
+      user,
+      leaderBoard,
+      cards,
+      clickCount,
+    });
+  }
 
-        setTimeout(() => {
-          this.setState({
-            cardsArray,
-            previousCard: {},
-            previousCardID: -1,
-            currentCard: {},
-            currentCardID: -1,
-            cardNeedUpdate: false,
-            canClick: true
-          });
-        }, 1500); // Does clicking another card during this timeout cause the matching bug??
-      }
+  processNormalMatch() {
+    const { currentCard, matched } = this.state;
+
+    const found = currentCard.cardValue;
+
+    this.setState({
+      matched: matched + 2,
+      cardNeedUpdate: false,
+      previousCard: {},
+      previousCardID: -1,
+      currentCard: {},
+      currentCardID: -1,
+      found,
+      canClick: true,
+    });
+  }
+
+  processNotMatch() {
+    const { currentCardID, previousCardID, cards } = this.state;
+
+    const newCards = cards.map((card, idx) =>
+      idx === previousCardID || idx === currentCardID
+        ? { ...card, flipped: false }
+        : card
+    );
+
+    setTimeout(() => {
+      this.setState({
+        cards: newCards,
+        previousCard: {},
+        previousCardID: -1,
+        currentCard: {},
+        currentCardID: -1,
+        cardNeedUpdate: false,
+        canClick: true,
+      });
+    }, 1500);
+  }
+
+  async componentDidUpdate() {
+    const { cardNeedUpdate, currentCard, previousCard, matched } = this.state;
+    const isMatched = currentCard.cardValue === previousCard.cardValue;
+
+    if (!cardNeedUpdate) return;
+
+    if (!isMatched) return this.processNotMatch();
+
+    // final match
+    if (matched === 14) {
+      await this.processFinalMatch();
+    } else {
+      // a match but not the final match
+      // store the cardValue in found so we can display the match in message
+      this.processNormalMatch();
     }
   }
 
   // first Card is clicked --> canClick true --> setState -> componentDidUpdate() --> cardNeedUpdate is false XXX
-  // second card is clicked --> setState() --> cardNeedUpdate = true and canClick = false --> 
-    // componentDidUpdate() --> gross/if else
- 
+  // second card is clicked --> setState() --> cardNeedUpdate = true and canClick = false -->
+  // componentDidUpdate() --> gross/if else
 
+  createRandomCards() {
+    const cards = pictures.map((picture, idx) => ({
+      flipped: false,
+      cardValue: idx,
+      picture: picture,
+    }));
 
-  createCardsArray() {
-    const cardsArray = [];
+    cards.push(...cards);
+    cards.sort(() => Math.random() - 0.5);
 
-    for (let i = 0; i < 8; i += 1) {
-      const card = {
-        flipped: false,
-        cardValue: i,
-        picture: pictures[i].content,
-      };
-
-      cardsArray.push(card, card);
-      cardsArray.sort(() => Math.random() - 0.5);
-    }
-
-    return cardsArray;
+    return cards;
   }
 
-  onCardClick(id, cardStatus) {
-    console.log('clicked')
+  onCardClick(cardIdx) {
+    const { canClick, clickCount, cards } = this.state;
 
-    if (this.state.canClick) {
-    // console.log('received from id', id, cardStatus);
-      const flipped = true;
-      const clickCount = this.state.clickCount + 1;
-      // on odd clicks (ie first click of the turn)
-      // first card
-      if (clickCount % 2 === 1) {
-        const previousCardID = id;
-        const previousCard = { ...cardStatus, flipped };
-        const cardsArray = [...this.state.cardsArray];
-        cardsArray[id] = previousCard;
+    if (!canClick) return;
 
-        this.setState({
-          cardsArray,
-          clickCount,
-          previousCard,
-          previousCardID,
-          found: null,
-        });
-      } else { // second card
-        // on even clicks (ie second click of the turn)
-        const currentCardID = id;
-        const currentCard = { ...cardStatus, flipped };
-        const cardsArray = [...this.state.cardsArray];
-        cardsArray[id] = currentCard;
-        // at this point, the 2nd card is not flipped yet, so we need to update the state to complete the flipping
-        // after components have been updated, we will check for if previous card value matches the current card value
-        this.setState({
-          cardsArray,
-          clickCount,
-          currentCard,
-          currentCardID,
-          cardNeedUpdate: true,
-          canClick: false
-        });
-      }
-    } 
+    const newClickCount = clickCount + 1;
+    const flippedCard = { ...cards[cardIdx], flipped: true };
+    const newCards = cards.map((card, idx) =>
+      idx === cardIdx ? flippedCard : card
+    );
+
+    const newState =
+      newClickCount % 2 === 1
+        ? // Odd click === first card
+          {
+            cards: newCards,
+            clickCount: newClickCount,
+            previousCard: flippedCard,
+            previousCardID: cardIdx,
+            found: null,
+          }
+        : // Even click === second card
+          // at this point, the 2nd card is not flipped yet, so we need to update the state to complete the flipping
+          // after components have been updated, we will check for if previous card value matches the current card value
+          {
+            cards: newCards,
+            clickCount: newClickCount,
+            currentCard: flippedCard,
+            currentCardID: cardIdx,
+            cardNeedUpdate: true,
+            canClick: false,
+          };
+
+    this.setState(newState);
   }
 
   logInUser(data) {
     // send post request to server to log in
     const { user, leaderBoard } = data;
     console.log('logged in user is', user);
-    const newState = { user, leaderBoard };
-    this.setState(newState);
+    this.setState({ user, leaderBoard });
   }
 
   signUpUser(data) {
     // send post request to server to sign up
     const { user, leaderBoard } = data;
-    const newState = { user, leaderBoard };
-    this.setState(newState);
+    console.log('signed up user is', user);
+    this.setState({ user, leaderBoard });
   }
 
   render() {
@@ -219,24 +207,13 @@ class App extends Component {
           <Route
             exact
             path="/"
-            render={(props) => (
-              // <Login {...props} state={this.state} logInUser={this.logInUser} />
-              <Game
-                {...props}
-                state={this.state}
-                onCardClick={this.onCardClick}
-              />
-            )}
+            render={(props) => <Login {...props} logInUser={this.logInUser} />}
           />
           <Route
             exact
-            path="/signup"
+            path="/SignUp"
             render={(props) => (
-              <Signup
-                {...props}
-                state={this.state}
-                signUpUser={this.signUpUser}
-              />
+              <SignUp {...props} signUpUser={this.signUpUser} />
             )}
           />
           <Route

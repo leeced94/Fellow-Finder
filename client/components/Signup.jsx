@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 
-const Signup = (props) => {
+const SignUp = ({ signUpUser, history }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -13,7 +13,7 @@ const Signup = (props) => {
     setPassword(e.target.value);
   };
 
-  const signup = () => {
+  const signUp = () => {
     fetch('/api/signup', {
       method: 'POST',
       body: JSON.stringify({ username, password }),
@@ -26,9 +26,9 @@ const Signup = (props) => {
         if (data.message) {
           alert(data.message);
         } else {
-          props.signUpUser(data);
+          signUpUser(data);
           alert('Signup successful');
-          props.history.push('/game');
+          history.push('/game');
         }
       })
       .catch((e) => {
@@ -46,7 +46,7 @@ const Signup = (props) => {
         <input type="password" value={password} onChange={passwordOnChange} />
       </form>
       <div className="buttons">
-        <button onClick={signup}>Sign Up</button>
+        <button onClick={signUp}>Sign Up</button>
         <Link to={`/`}>
           <button type="button" className="buttons">
             Log In
@@ -57,4 +57,4 @@ const Signup = (props) => {
   );
 };
 
-export default withRouter(Signup);
+export default withRouter(SignUp);
