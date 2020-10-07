@@ -64,4 +64,13 @@ router.delete('/delete', userController.deleteAllUsers, (req, res) => {
   res.status(200).send('All user deleted!');
 });
 
+router.put('/user/:username', userController.updateUsername, (req, res) => {
+  const { user } = res.locals;
+  res.status(200).send(user);
+});
+
+router.delete('/user/:username', userController.deleteUsername, (req, res) => {
+  res.status(200).send('User is deleted');
+});
+
 module.exports = router;

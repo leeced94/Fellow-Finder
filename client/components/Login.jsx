@@ -32,7 +32,7 @@ const Login = ({ logInUser }) => {
         alert(data.message);
       } else {
         logInUser(data);
-        alert('Login successful');
+        // alert('Login successful');
         history.push('/game');
       }
     } catch (err) {
@@ -60,7 +60,7 @@ const Login = ({ logInUser }) => {
 
         <div className="buttons">
           <button type="submit">Log-in</button>
-          <Link to={`/signup`}>
+          <Link to="/signup">
             <button type="button" className="buttons">
               Sign Up
             </button>
