@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
-
 import Game from './components/Game';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
@@ -198,6 +197,10 @@ class App extends Component {
   // componentDidUpdate() --> gross/if else
 
   onCardClick(cardIdx) {
+    const audioClick = document.querySelector('audio.flip');
+    audioClick.currentTime = 0;
+    audioClick.play();
+    
     const { canClick, clickCount, cards } = this.state;
 
     if (!canClick) return;
@@ -258,16 +261,9 @@ class App extends Component {
 
   render() {
     return (
+    <div>
+      <audio className='flip' src='./client/sounds/CardFlip.ogg' type='audio/ogg'></audio>
       <div className="router">
-        <p>
-          Game Mode {this.state.difficulty} – {this.state.cards.length / 2}{' '}
-          pairs
-        </p>
-        <select value={this.state.difficulty} onChange={this.handleDropdown}>
-          <option value="easy">Easy</option>
-          <option value="medium">Medium</option>
-          <option value="hard">Hard</option>
-        </select>
         <Switch>
           <Route
             exact
@@ -289,6 +285,8 @@ class App extends Component {
                 {...props}
                 state={this.state}
                 onCardClick={this.onCardClick}
+                handleDropdown={this.handleDropdown}
+                difficulty={this.state.difficulty}
               />
             )}
           />
@@ -306,6 +304,7 @@ class App extends Component {
           />
         </Switch>
       </div>
+    </div>
     );
   }
 }

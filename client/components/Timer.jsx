@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 
-const Timer = () => {
+// var currDiff = 'easy';
+
+const Timer = (props) => {
   const [timer, setTimer] = useState(60);
+
+// if(props.difficulty !== currDiff) {
+//     currDiff = props.difficulty;
+//     setTimer(60);
+// }
 
 setTimeout(() => {
     if (timer > 0) {
