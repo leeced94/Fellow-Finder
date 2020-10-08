@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+
 * {
   font-family: 'Baloo Tammudu 2', 'Century Gothic', sans-serif;
   color: #393939;
@@ -43,6 +45,8 @@ p {
 .buttons {
   display: flex;
   flex-direction: row;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 button {
@@ -57,12 +61,25 @@ button {
 }
 
 .card {
-  box-sizing: border-box;
+  /* box-sizing: border-box;
   width: 100px;
   height: 100px;
   align-items: center;
   justify-items: center;
-  display: grid;
+  display: grid; */
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(#1daaf6, #23b1a3);
+  border-radius: 5px;
+  padding: 5px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  color: #0ea1f5;
+}
+
+.card:hover {
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }
 
 .front {
@@ -91,6 +108,7 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: 'Fredoka One', cursive;
 }
 
 .timerAndDiff {
@@ -100,18 +118,19 @@ button {
 
 #diffDropdown {
   border: solid 1px #393939;
-  background-color: #fff2f9;
+  background-color: #a8d3f2;
   width: 1fr;
   border-radius: 3px;
   padding-top: 3px;
   padding-bottom: 3px;
   padding-left: 10px;
   padding-right: 10px;
+  margin-bottom: 155px;
 }
 
 .timerDiv {
   border: solid 1px #393939;
-  background-color: #fff2f9;
+  background-color: #a8d3f2;
   width: 1fr;
   border-radius: 3px;
   padding-top: 3px;
@@ -136,7 +155,7 @@ button {
   border: solid 1px #393939;
   margin: 20px;
   padding: 30px;
-  background-color: #fff2f9;
+  background-color: #a8d3f2;
   border-radius: 3px;
   z-index: 0;
 }
@@ -146,7 +165,7 @@ button {
   border: solid 1px #393939;
   margin: 20px;
   padding: 30px;
-  background-color: #fff2f9;
+  background-color: #a8d3f2;
   border-radius: 3px;
 }
 
@@ -164,7 +183,7 @@ button {
 #back {
   width: 100px;
   height: 100px;
-  background-color: #f3dce0;
+  background-color: #a8d3f2;
   cursor: pointer;
   border-radius: 3px;
 }
@@ -235,16 +254,14 @@ h3 {
   margin-top: 20px;
   display: grid;
   justify-items: center;
-  border: solid 1px #393939;
+  border: solid 0.2px #9f9f9f;
+  border-radius: 15px;
   padding: 20px;
-  width: 85%;
-  border-radius: 3px;
-  background-image: linear-gradient(
-    179.8deg,
-    #809bce 23%,
-    rgba(232, 232, 232, 1) 91.3%
-  );
+  width: 90%;
+  background-color: #a8d3f2;
   height: 100px;
+  font-size: 30px;
+  margin-bottom: 50px;
 }
 
 .NavBar {
@@ -267,4 +284,12 @@ h3 {
 
 .UserPage input {
   border: 1px solid black;
+}
+
+.selectDifficulty {
+  overflow: hidden;
+  border-radius: 5px;
+  box-shadow: 0 30px 80px 10px rgba(0, 0, 0, 0.2);
+  border: 1px solid #e2eded;
+  border-color: #eaf1f1 #e4eded #dbe7e7 #e4eded;
 }

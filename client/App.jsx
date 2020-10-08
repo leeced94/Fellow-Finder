@@ -195,7 +195,7 @@ class App extends Component {
     if (!isMatched) return this.processNotMatch();
 
     // final match
-    if (matched === 14) {
+    if (matched === this.state.difficulty * 2 - 2) {
       this.winRef.current.currentTime = 0;
       this.winRef.current.play();
 
@@ -218,7 +218,7 @@ class App extends Component {
     if (!canClick) return;
 
     this.flipRef.current.currentTime = 0;
-    this.flipRef.current.play()
+    this.flipRef.current.play();
 
     const newClickCount = clickCount + 1;
     const flippedCard = { ...cards[cardIdx], flipped: true };
@@ -276,53 +276,75 @@ class App extends Component {
 
   render() {
     return (
-    <div>
-      <audio ref={this.incorrectRef} className='incorrect' src='/client/sounds/incorrect.wav' type='audio/wav'></audio>
-      <audio ref={this.correctRef} className='correct' src='/client/sounds/correct.wav' type='audio/wav'></audio>
-      <audio ref={this.flipRef} className='flip' src='/client/sounds/CardFlip.ogg' type='audio/ogg'></audio>
-      <audio ref={this.winRef} className='flip' src='/client/sounds/ohyeah.wav' type='audio/wav'></audio>
-      <div className="router">
-        <Switch>
-          <Route
-            exact
-            path="/"
-            render={(props) => <Login {...props} logInUser={this.logInUser} />}
-          />
-          <Route
-            exact
-            path="/SignUp"
-            render={(props) => (
-              <SignUp {...props} signUpUser={this.signUpUser} />
-            )}
-          />
-          <Route
-            exact
-            path="/game"
-            render={(props) => (
-              <Game
-                {...props}
-                state={this.state}
-                onCardClick={this.onCardClick}
-                handleDropdown={this.handleDropdown}
-                difficulty={this.state.difficulty}
-              />
-            )}
-          />
+      <div>
+        <audio
+          ref={this.incorrectRef}
+          className='incorrect'
+          src='/client/sounds/incorrect.wav'
+          type='audio/wav'
+        ></audio>
+        <audio
+          ref={this.correctRef}
+          className='correct'
+          src='/client/sounds/correct.wav'
+          type='audio/wav'
+        ></audio>
+        <audio
+          ref={this.flipRef}
+          className='flip'
+          src='/client/sounds/CardFlip.ogg'
+          type='audio/ogg'
+        ></audio>
+        <audio
+          ref={this.winRef}
+          className='flip'
+          src='/client/sounds/ohyeah.wav'
+          type='audio/wav'
+        ></audio>
+        <div className='router'>
+          <Switch>
+            <Route
+              exact
+              path='/'
+              render={(props) => (
+                <Login {...props} logInUser={this.logInUser} />
+              )}
+            />
+            <Route
+              exact
+              path='/SignUp'
+              render={(props) => (
+                <SignUp {...props} signUpUser={this.signUpUser} />
+              )}
+            />
+            <Route
+              exact
+              path='/game'
+              render={(props) => (
+                <Game
+                  {...props}
+                  state={this.state}
+                  onCardClick={this.onCardClick}
+                  handleDropdown={this.handleDropdown}
+                  difficulty={this.state.difficulty}
+                />
+              )}
+            />
 
-          <Route
-            exact
-            path="/user"
-            render={(props) => (
-              <UserPage
-                {...props}
-                user={this.state.user}
-                changeUserName={this.changeUserName}
-              />
-            )}
-          />
-        </Switch>
+            <Route
+              exact
+              path='/user'
+              render={(props) => (
+                <UserPage
+                  {...props}
+                  user={this.state.user}
+                  changeUserName={this.changeUserName}
+                />
+              )}
+            />
+          </Switch>
+        </div>
       </div>
-    </div>
     );
   }
 }
