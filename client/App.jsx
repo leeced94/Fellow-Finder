@@ -4,7 +4,6 @@ import { Switch, Route } from 'react-router-dom';
 import Game from './components/Game';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
-import NavBar from './components/NavBar';
 import UserPage from './components/UserPage';
 
 import './style.css';
@@ -26,6 +25,13 @@ const initialState = {
   found: null,
   canClick: true,
   hasWon: false,
+  difficulty: 'easy',
+};
+
+const difficultyObj = {
+  easy: 8,
+  medium: 10,
+  hard: 12,
 };
 
 class App extends Component {
@@ -40,12 +46,62 @@ class App extends Component {
     this.processNormalMatch = this.processNormalMatch.bind(this);
     this.processNotMatch = this.processNotMatch.bind(this);
     this.changeUserName = this.changeUserName.bind(this);
+    this.handleDropdown = this.handleDropdown.bind(this);
+  }
+
+  createRandomCards(randomPictures) {
+    /**
+     *  let user pick the size
+     * we need an select dropdown
+     * easy = 4 x 4 = 16 / 2 = 8 pairs
+     * medium = 4 x 5 = 20 / 2 = 10 pairs
+     * large = 4 x 6 = 24 / 2 = 12 pairs
+     *
+     * sort the pictures randomly, take the first 8/10/12 pictures
+     *
+     */
+
+    const cards = randomPictures.map((picture, idx) => ({
+      flipped: false,
+      cardValue: idx,
+      picture,
+    }));
+
+    cards.push(...cards);
+    cards.sort(() => Math.random() - 0.5);
+
+    return cards;
+  }
+
+  // helper function
+  getPicsPairs(difficulty) {
+    // difficulty === easy/medium/hard
+    const numOfPairs = difficultyObj[difficulty]; // 8/10/12
+    const picsPairs = pictures
+      .sort(() => Math.random() - 0.5) // random the order
+      .slice(0, numOfPairs); // slice first numOfPairs
+
+    return picsPairs;
   }
 
   componentDidMount() {
-    const cards = this.createRandomCards();
+    const picsPairs = this.getPicsPairs(this.state.difficulty);
+    const cards = this.createRandomCards(picsPairs);
+    console.log(cards);
     const cardCreated = true;
-    this.setState({ ...this.state, cards, cardCreated });
+    this.setState({ cards, cardCreated });
+  }
+
+  handleDropdown(event) {
+    const difficulty = event.target.value; // easy/medium/hard
+    const picsPairs = this.getPicsPairs(difficulty);
+    const cards = this.createRandomCards(picsPairs);
+
+    this.createRandomCards(picsPairs);
+    this.setState({
+      difficulty,
+      cards,
+    });
   }
 
   async getUserAndLeaderBoard() {
@@ -79,9 +135,10 @@ class App extends Component {
   }
 
   processNormalMatch() {
-    const { currentCard, matched } = this.state;
+    const { currentCard, matched, currentCardID } = this.state;
 
-    const found = currentCard.cardValue;
+    // const found = currentCard.cardValue;
+    const found = currentCardID;
 
     this.setState({
       matched: matched + 2,
@@ -127,7 +184,7 @@ class App extends Component {
 
     // final match
     if (matched === 14) {
-      this.setState({hasWon: true})
+      this.setState({ hasWon: true });
       await this.processFinalMatch();
     } else {
       // a match but not the final match
@@ -139,19 +196,6 @@ class App extends Component {
   // first Card is clicked --> canClick true --> setState -> componentDidUpdate() --> cardNeedUpdate is false XXX
   // second card is clicked --> setState() --> cardNeedUpdate = true and canClick = false -->
   // componentDidUpdate() --> gross/if else
-
-  createRandomCards() {
-    const cards = pictures.map((picture, idx) => ({
-      flipped: false,
-      cardValue: idx,
-      picture,
-    }));
-
-    cards.push(...cards);
-    cards.sort(() => Math.random() - 0.5);
-
-    return cards;
-  }
 
   onCardClick(cardIdx) {
     const { canClick, clickCount, cards } = this.state;
@@ -213,9 +257,17 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.state.user);
     return (
       <div className="router">
+        <p>
+          Game Mode {this.state.difficulty} – {this.state.cards.length / 2}{' '}
+          pairs
+        </p>
+        <select value={this.state.difficulty} onChange={this.handleDropdown}>
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
         <Switch>
           <Route
             exact
