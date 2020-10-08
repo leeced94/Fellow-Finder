@@ -14,6 +14,11 @@ const Game = ({ state, onCardClick }) => (
       previousCard={state.previousCard}
       currentCard={state.currentCard}
       found={state.found}
+      names={state.cards.map(
+        (card) => card.picture.split('/client/images/')[1].split('.')[0]
+      )}
+      previousCardID={state.previousCardID}
+      currentCardID={state.currentCardID}
     />
     <Board
       cardCreated={state.cardCreated}

@@ -8,6 +8,10 @@ export const names = [
   'Jeho',
   'Wayne',
   'Midori',
+  'Alonso',
+  'Will Hack',
+  'Sully',
+  'Matt',
 ];
 
 const pictures = names.map((person) => `${BASE}/${person}.jpg`);
