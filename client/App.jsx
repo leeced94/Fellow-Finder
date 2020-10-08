@@ -259,15 +259,6 @@ class App extends Component {
   render() {
     return (
       <div className="router">
-        <p>
-          Game Mode {this.state.difficulty} – {this.state.cards.length / 2}{' '}
-          pairs
-        </p>
-        <select value={this.state.difficulty} onChange={this.handleDropdown}>
-          <option value="easy">Easy</option>
-          <option value="medium">Medium</option>
-          <option value="hard">Hard</option>
-        </select>
         <Switch>
           <Route
             exact
@@ -289,6 +280,8 @@ class App extends Component {
                 {...props}
                 state={this.state}
                 onCardClick={this.onCardClick}
+                handleDropdown={this.handleDropdown}
+                difficulty={this.state.difficulty}
               />
             )}
           />

@@ -71,6 +71,22 @@ button {
   align-items: center;
 }
 
+.timerAndDiff {
+  display: flex;
+  flex-direction: column;
+}
+
+#diffDropdown {
+  border: solid 1px #393939;
+  background-color: #fff2f9;
+  width: 1fr;
+  border-radius: 3px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 .timerDiv {
   border: solid 1px #393939;
   background-color: #fff2f9;

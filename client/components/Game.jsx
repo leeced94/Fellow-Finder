@@ -6,7 +6,7 @@ import InfoContainer from './InfoContainer';
 import LeaderBoard from './LeaderBoard';
 import Message from './Message';
 
-const Game = ({ state, onCardClick }) => (
+const Game = ({ state, onCardClick, handleDropdown, difficulty }) => (
   <div className="Game">
     <NavBar user={state.user} />
     <InfoContainer user={state.user} clickCount={state.clickCount} />
@@ -24,7 +24,8 @@ const Game = ({ state, onCardClick }) => (
       cardCreated={state.cardCreated}
       cards={state.cards}
       onCardClick={onCardClick}
-      hasWon={state.hasWon}
+      handleDropdown={handleDropdown}
+      difficulty={difficulty}
     />
     <LeaderBoard leaderBoard={state.leaderBoard} />
   </div>
