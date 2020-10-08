@@ -1,6 +1,6 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const findOrCreate = require('mongoose-findorcreate');
+const User = require('./models/userModel');
 
 passport.serializeUser(function (user, done) {
   done(null, user.id);
@@ -17,12 +17,22 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: 'http://localhost:8080/auth/google/callback',
+      callbackURL: '/auth/abc',
     },
-    function (accessToken, refreshToken, profile, cb) {
-      User.findOrCreate({ googleId: profile.id }, function (err, user) {
-        return cb(err, user);
-      });
+    async (accessToken, refreshToken, profile, done) => {
+      const user = await User.findOne({ username: profile.id });
+
+      if (user) {
+        console.log('found user', user);
+        done(null, user);
+      } else {
+        const newUser = await User.create({
+          username: profile.id,
+          password: profile.id,
+        });
+        console.log('new user', newUser);
+        done(null, newUser);
+      }
     }
   )
 );
