@@ -1,22 +1,35 @@
-import React from 'react';
-import { Link, withRouter, useHistory } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useHistory, useLocation } from 'react-router-dom';
+import queryString from 'query-string';
 
 import { useInput } from '../hooks';
 
 const Login = ({ logInUser }) => {
   const [username, handleChangeUserName] = useInput();
   const [password, handleChangePassword] = useInput();
+  const [message, setMessage] = useState('');
   const history = useHistory();
+  const location = useLocation();
 
-  // Old code, repeated state + handler and no useHistory
-  // const [username, setUsername] = useState('');
-  // const [password, setPassword] = useState('');
-  // const usernameOnChange = (e) => {
-  //   setUsername(e.target.value);
-  // };
-  // const passwordOnChange = (e) => {
-  //   setPassword(e.target.value);
-  // };
+  useEffect(() => {
+    const { id } = queryString.parse(location.search);
+
+    if (id) {
+      fetch('/api/login', {
+        method: 'POST',
+        body: JSON.stringify({ username: id, password: id }),
+        headers: {
+          'Content-type': 'Application/json',
+        },
+      })
+        .then((data) => data.json())
+        .then((data) => {
+          logInUser(data);
+          history.push('/game');
+        })
+        .catch((err) => console.log(err));
+    }
+  }, []);
 
   const login = async () => {
     try {
@@ -32,8 +45,8 @@ const Login = ({ logInUser }) => {
         alert(data.message);
       } else {
         logInUser(data);
-        // alert('Login successful');
-        history.push('/game');
+        setMessage('Success!');
+        setTimeout(() => history.push('/game'), 500);
       }
     } catch (err) {
       console.log(err);
@@ -66,6 +79,17 @@ const Login = ({ logInUser }) => {
             </button>
           </Link>
         </div>
+
+        <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
+          <li>
+            <a href="/auth/login">Log in using Google</a>
+          </li>
+          <li>
+            <a href="/auth/logout">Log out of Google</a>
+          </li>
+        </ul>
+
+        <p>{message && message}</p>
       </form>
     </div>
   );
