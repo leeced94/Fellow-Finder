@@ -47,7 +47,10 @@ class App extends Component {
     this.changeUserName = this.changeUserName.bind(this);
     this.handleDropdown = this.handleDropdown.bind(this);
 
-    this.audioRef = React.createRef()
+    this.flipRef = React.createRef();
+    this.correctRef = React.createRef();
+    this.incorrectRef = React.createRef();
+    this.winRef = React.createRef();
   }
 
   createRandomCards(randomPictures) {
@@ -136,6 +139,10 @@ class App extends Component {
   }
 
   processNormalMatch() {
+    this.correctRef.current.currentTime = 0;
+    this.correctRef.current.play();
+    this.flipRef.current.pause();
+
     const { currentCard, matched, currentCardID } = this.state;
 
     // const found = currentCard.cardValue;
@@ -154,6 +161,10 @@ class App extends Component {
   }
 
   processNotMatch() {
+    this.incorrectRef.current.currentTime = 0;
+    this.incorrectRef.current.play();
+    this.flipRef.current.pause();
+
     const { currentCardID, previousCardID, cards } = this.state;
 
     const newCards = cards.map((card, idx) =>
@@ -185,6 +196,9 @@ class App extends Component {
 
     // final match
     if (matched === 14) {
+      this.winRef.current.currentTime = 0;
+      this.winRef.current.play();
+
       this.setState({ hasWon: true });
       await this.processFinalMatch();
     } else {
@@ -199,16 +213,12 @@ class App extends Component {
   // componentDidUpdate() --> gross/if else
 
   onCardClick(cardIdx) {
-    this.audioRef.current.currentTime = 0;
-    this.audioRef.current.play()
-    
-    // const audioClick = document.querySelector('audio.flip');
-    // audioClick.currentTime = 0;
-    // audioClick.play();
-    
     const { canClick, clickCount, cards } = this.state;
 
     if (!canClick) return;
+
+    this.flipRef.current.currentTime = 0;
+    this.flipRef.current.play()
 
     const newClickCount = clickCount + 1;
     const flippedCard = { ...cards[cardIdx], flipped: true };
@@ -267,8 +277,10 @@ class App extends Component {
   render() {
     return (
     <div>
-      {/* <audio ref={this.audioRef} className='flip' src='/client/sounds/CardFlip.ogg' type='audio/ogg'></audio> */}
-      <audio ref={this.audioRef} className='flip' src='/client/sounds/incorrect.wav' type='audio/wav'></audio>
+      <audio ref={this.incorrectRef} className='incorrect' src='/client/sounds/incorrect.wav' type='audio/wav'></audio>
+      <audio ref={this.correctRef} className='correct' src='/client/sounds/correct.wav' type='audio/wav'></audio>
+      <audio ref={this.flipRef} className='flip' src='/client/sounds/CardFlip.ogg' type='audio/ogg'></audio>
+      <audio ref={this.winRef} className='flip' src='/client/sounds/ohyeah.wav' type='audio/wav'></audio>
       <div className="router">
         <Switch>
           <Route
