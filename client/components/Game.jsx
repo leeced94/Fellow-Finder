@@ -8,8 +8,8 @@ import Message from './Message';
 
 const Game = ({ state, onCardClick, handleDropdown, difficulty }) => (
   <div className='Game'>
-    {/* <NavBar user={state.user} /> */}
-    {/* <InfoContainer user={state.user} clickCount={state.clickCount} /> */}
+    <NavBar user={state.user} />
+    <InfoContainer user={state.user} clickCount={state.clickCount} />
     <Message
       previousCard={state.previousCard}
       currentCard={state.currentCard}

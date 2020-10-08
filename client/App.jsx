@@ -195,7 +195,7 @@ class App extends Component {
     if (!isMatched) return this.processNotMatch();
 
     // final match
-    if (matched === this.state.difficulty * 2 - 2) {
+    if (matched === (difficultyObj[this.state.difficulty] * 2 - 2)) {
       this.winRef.current.currentTime = 0;
       this.winRef.current.play();
 
