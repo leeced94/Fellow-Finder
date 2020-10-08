@@ -82,6 +82,28 @@ button {
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }
 
+.front {
+  animation: shake .8s;
+}
+
+@keyframes shake {
+  10%, 90% {
+      transform: translate3d(-3px, 0, 0);
+  }
+
+  20%, 80% {
+      transform: translate3d(5px, 0, 0);
+  }
+
+  30%, 50%, 70% {
+      transform: translate3d(-2px, 0, 0);
+  }
+
+  40%, 60% {
+      transform: translate3d(1px, 0, 0);
+  }
+}
+
 .boardTimer {
   display: flex;
   justify-content: center;
