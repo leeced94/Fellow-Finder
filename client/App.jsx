@@ -46,6 +46,8 @@ class App extends Component {
     this.processNotMatch = this.processNotMatch.bind(this);
     this.changeUserName = this.changeUserName.bind(this);
     this.handleDropdown = this.handleDropdown.bind(this);
+
+    this.audioRef = React.createRef()
   }
 
   createRandomCards(randomPictures) {
@@ -197,9 +199,12 @@ class App extends Component {
   // componentDidUpdate() --> gross/if else
 
   onCardClick(cardIdx) {
-    const audioClick = document.querySelector('audio.flip');
-    audioClick.currentTime = 0;
-    audioClick.play();
+    this.audioRef.current.currentTime = 0;
+    this.audioRef.current.play()
+    
+    // const audioClick = document.querySelector('audio.flip');
+    // audioClick.currentTime = 0;
+    // audioClick.play();
     
     const { canClick, clickCount, cards } = this.state;
 
@@ -262,7 +267,8 @@ class App extends Component {
   render() {
     return (
     <div>
-      <audio className='flip' src='./client/sounds/CardFlip.ogg' type='audio/ogg'></audio>
+      {/* <audio ref={this.audioRef} className='flip' src='/client/sounds/CardFlip.ogg' type='audio/ogg'></audio> */}
+      <audio ref={this.audioRef} className='flip' src='/client/sounds/incorrect.wav' type='audio/wav'></audio>
       <div className="router">
         <Switch>
           <Route
