@@ -7,9 +7,9 @@ import LeaderBoard from './LeaderBoard';
 import Message from './Message';
 
 const Game = ({ state, onCardClick, handleDropdown, difficulty }) => (
-  <div className="Game">
-    <NavBar user={state.user} />
-    <InfoContainer user={state.user} clickCount={state.clickCount} />
+  <div className='Game'>
+    {/* <NavBar user={state.user} /> */}
+    {/* <InfoContainer user={state.user} clickCount={state.clickCount} /> */}
     <Message
       previousCard={state.previousCard}
       currentCard={state.currentCard}
@@ -27,7 +27,7 @@ const Game = ({ state, onCardClick, handleDropdown, difficulty }) => (
       handleDropdown={handleDropdown}
       difficulty={difficulty}
     />
-    <LeaderBoard leaderBoard={state.leaderBoard} />
+    {/* <LeaderBoard leaderBoard={state.leaderBoard} /> */}
   </div>
 );
 
